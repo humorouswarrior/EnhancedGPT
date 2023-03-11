@@ -1,0 +1,11 @@
+for running,
+cd client 
+npm start
+
+another terminal
+node index.js
+
+
+on browser
+select modal to be
+text-davinci-003 
