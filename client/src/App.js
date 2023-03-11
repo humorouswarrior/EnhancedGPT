@@ -1,9 +1,15 @@
 import "./App.css";
 import "./normal.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    getEngines()
+  }, [])
+
   const [input, setInput] = useState("");
+  const [models, setModels] = useState([]);
+  const [currentModel, setCurrentModel] = useState([]);
   const [chatlog, setChatlog] = useState([
     {
       user: "gpt",
@@ -19,6 +25,15 @@ function App() {
   function clearchat() {
     setChatlog([]);
   }
+
+  function getEngines(){
+    fetch("http://localhost:5000/models")
+    .then(res => res.json())
+    .then(data=>{
+      console.log(data.models)
+      setModels(data.models)
+    })
+  } 
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -37,6 +52,7 @@ function App() {
       },
       body: JSON.stringify({
         message: messages,
+        currentModel
       }),
     });
     const data = await response.json();
@@ -49,6 +65,13 @@ function App() {
         <div className="side-menu-button" onClick={clearchat}>
           <span>+</span>
           New Chat
+        </div>
+        <div className="models">
+          <select onClick={(e)=> {setCurrentModel(e.target.value)}}>
+            {models.map((model, index) => (
+              <option key = {model.id} value = {model.id}>{model.id}</option>
+            ))}
+          </select>
         </div>
       </aside>
       <section className="chatbox">
